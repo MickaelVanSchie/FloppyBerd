@@ -1,0 +1,8 @@
+/dist
+*.vsconfig
+/Logs
+/Temp
+/Packages
+/Library
+/obj
+/Assets
