@@ -8,11 +8,16 @@ public class BirdScript : MonoBehaviour
     public InputAction playerControls;
     public float flapStrength;
     public GameLogic logic;
-    private CircleCollider2D collider;
+    private Camera _camera;
     
     void OnEnable()
     {
         playerControls.Enable();
+    }
+
+    void Awake()
+    {
+        _camera = Camera.main;
     }
     
     void OnDisable()
@@ -23,7 +28,6 @@ public class BirdScript : MonoBehaviour
     void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<GameLogic>();
-        collider = GameObject.FindGameObjectWithTag("Player").GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
@@ -32,12 +36,16 @@ public class BirdScript : MonoBehaviour
         if (playerControls.triggered && !logic.isDead) {
             rb.linearVelocity = Vector2.up * flapStrength;
         }
+    
+        Vector3 viewPos = _camera.WorldToViewportPoint(transform.position);
+        if (viewPos.y < 0f || viewPos.y > 1f)
+        {
+            logic.Die();
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         logic.Die();
-        collider.enabled = false;
-        collider.isTrigger = true;
     }
 }
